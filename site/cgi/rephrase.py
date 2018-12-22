@@ -119,51 +119,64 @@ def get_associat(word):
         w_arr = x[0].split('_')
         if w_arr[1] == lemma.split('_')[1] and float(x[1]) >= 0.5: #часть речи и косинусная близость
             if w_arr[1] == 'NOUN':
-                
-                n_arr = [] 
-                for el in old_tl:
-                    try:
-                        if not(el is None):
-                            n_arr.append(el)
-                    except:
-                        pass
-                if not(len(n_arr) == 0):
-                    return w_arr[0]
+                if old_tl[0] is None:
+                    old_tl[0] = 'nomn'
+                if old_tl[1] is None:
+                    old_tl[1] = 'sing'
                 if (nec[0] is None or m.parse(w_arr[0])[0].tag.gender == nec[0]):
-                    result = m.parse(w_arr[0])[0].inflect(set(n_arr))
+                    result = m.parse(w_arr[0])[0].inflect(set(old_tl))
                     if result is None:
                         continue
-                    return m.parse(w_arr[0])[0].inflect(set(n_arr))[0]
+                    return m.parse(w_arr[0])[0].inflect(set(old_tl))[0]
                 
             if w_arr[1] == 'VERB':
                 
-                n_arr = []
-                for el in old_tl:
+                
+                if (old_tl[0] is None) or (old_tl[0] != 'impr'):
+                    fl = True
+                    for el in old_tl:
+                        try:
+                            if not(el is None):
+                                fl = False
+                                
+                        except:
+                            pass
+                    if fl:
+                        return w_arr[0]
+                    
+                    if old_tl[0] is None:
+                        old_tl[0] = 'indc'
+                    if old_tl[1] is None:
+                        old_tl[1] = 'sing'
+                    if old_tl[2] is None:
+                        old_tl[2] = 'pres'
+                    if old_tl[3] is None:
+                        old_tl[3] = '1per'
                     try:
-                        if not(el is None):
-                            n_arr.append(el)
+                        if old_tl[4] is None:
+                            old_tl = old_tl[:4]
                     except:
                         pass
-               
-            
+                else:
+                    old_tl = old_tl[:2]
                 if (nec[0] is None or m.parse(w_arr[0])[0].tag.transitivity == nec[0]):
-                    result = m.parse(w_arr[0])[0].inflect(set(n_arr))
+                    result = m.parse(w_arr[0])[0].inflect(set(old_tl))
                     if result is None:
                         continue
-                    return m.parse(w_arr[0])[0].inflect(set(n_arr))[0]
+                    return m.parse(w_arr[0])[0].inflect(set(old_tl))[0]
                 
             if w_arr[1] == 'ADJ':
-                n_arr = []   
-                for el in old_tl:
-                    try:
-                        if not(el is None):
-                            n_arr.append(el)
-                    except:
-                        pass
-                result = m.parse(w_arr[0])[0].inflect(set(n_arr))
+                if old_tl[0] is None:
+                    old_tl[0] = 'sing'
+                if old_tl[1] is None:
+                    old_tl[1] = 'masc'
+                if old_tl[2] is None:
+                    old_tl[2] = 'gent' 
+                result = m.parse(w_arr[0])[0].inflect(set(old_tl))
                 if result is None:
+                    
                     continue
-                return m.parse(w_arr[0])[0].inflect(set(n_arr))[0]
+                return m.parse(w_arr[0])[0].inflect(set(old_tl))[0]
     return word
 
 #Анализ текста и вывод результата
