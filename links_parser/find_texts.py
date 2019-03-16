@@ -1,5 +1,6 @@
 import requests 
 import re
+
 def gentxturls():
     filepages = open('textpages.txt')
     filetexts = open('filetexts.txt', 'w')
